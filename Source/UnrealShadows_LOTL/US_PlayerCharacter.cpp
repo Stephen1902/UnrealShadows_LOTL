@@ -10,6 +10,8 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "US_CharacterStats.h"
+#include "Engine/DataTable.h"
 
 // Sets default values
 AUS_PlayerCharacter::AUS_PlayerCharacter()
@@ -58,12 +60,13 @@ void AUS_PlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	UpdateCharacterStats(1);
 }
 
 void AUS_PlayerCharacter::Move(const FInputActionValue& Value)
 {
 	const auto MovementVector = Value.Get<FVector2D>();
-	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Yellow, FString::Printf(TEXT("MovementVector: %s"), *MovementVector.ToString()));
 	if (Controller != nullptr)
 	{
 		const auto Rotation = Controller->GetControlRotation();
@@ -73,16 +76,11 @@ void AUS_PlayerCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Yellow, FString::Printf(TEXT("Controller Invalid")));
-	}
 }
 
 void AUS_PlayerCharacter::Look(const FInputActionValue& Value)
 {
 	const auto LookAxisVector = Value.Get<FVector2D>();
-	GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("LookAxisVector: %s"), *LookAxisVector.ToString()));
 	if (Controller != nullptr)
 	{
 		AddControllerYawInput(LookAxisVector.X);
@@ -92,14 +90,18 @@ void AUS_PlayerCharacter::Look(const FInputActionValue& Value)
 
 void AUS_PlayerCharacter::SprintStart(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(2, 5.f, FColor::Blue, TEXT("SprintStart"));
-	GetCharacterMovement()->MaxWalkSpeed = 3000.f;
+	if (GetCharacterStats())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = GetCharacterStats()->SprintSpeed;
+	}
 }
 
 void AUS_PlayerCharacter::SprintEnd(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(2, 5.f, FColor::Blue, TEXT("SprintEnd"));
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	if(GetCharacterStats())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = GetCharacterStats()->WalkSpeed;
+	}
 }
 
 void AUS_PlayerCharacter::Interact(const FInputActionValue& Value)
@@ -126,6 +128,21 @@ void AUS_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AUS_PlayerCharacter::Interact);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AUS_PlayerCharacter::SprintStart);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AUS_PlayerCharacter::SprintEnd);
+	}
+}
+
+void AUS_PlayerCharacter::UpdateCharacterStats(int32 CharacterLevel)
+{
+	if(CharacterDataTable)
+	{
+		TArray<FUS_CharacterStats*> CharacterStatsRows;
+		CharacterDataTable->GetAllRows<FUS_CharacterStats>(TEXT("US_PlayerCharacter"), CharacterStatsRows);
+		if(CharacterStatsRows.Num() > 0)
+		{
+			const auto NewCharacterLevel = FMath::Clamp(CharacterLevel, 1, CharacterStatsRows.Num());
+			CharacterStats = CharacterStatsRows[NewCharacterLevel - 1];
+			GetCharacterMovement()->MaxWalkSpeed = GetCharacterStats()->WalkSpeed;
+		}
 	}
 }
 

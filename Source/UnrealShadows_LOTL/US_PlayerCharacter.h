@@ -31,6 +31,11 @@ class UNREALSHADOWS_LOTL_API AUS_PlayerCharacter : public ACharacter
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> InteractAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Data", meta = (AllowPrivateAccess = "true"))
+	class UDataTable* CharacterDataTable;
+	
+	struct FUS_CharacterStats* CharacterStats;
 	
 public:
 	// Sets default values for this character's properties
@@ -55,6 +60,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void UpdateCharacterStats(int32 CharacterLevel);
+	
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	FORCEINLINE FUS_CharacterStats* GetCharacterStats() const { return CharacterStats; }
 };
