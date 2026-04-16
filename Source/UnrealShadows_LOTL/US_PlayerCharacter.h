@@ -59,6 +59,9 @@ protected:
 	void SprintEnd(const FInputActionValue& Value);
 	
 	void Interact(const FInputActionValue& Value);
+
+	UFUNCTION(Server, Reliable)
+	void Interact_Server();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -71,4 +74,8 @@ public:
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE FUS_CharacterStats* GetCharacterStats() const { return CharacterStats; }
+
+private:
+	UPROPERTY()
+	AActor* InteractableActor;
 };
