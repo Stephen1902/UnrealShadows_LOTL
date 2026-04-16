@@ -88,7 +88,7 @@ void AUS_PlayerCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void AUS_PlayerCharacter::SprintStart(const FInputActionValue& Value)
+void AUS_PlayerCharacter::SprintStart_Server_Implementation()
 {
 	if (GetCharacterStats())
 	{
@@ -96,12 +96,22 @@ void AUS_PlayerCharacter::SprintStart(const FInputActionValue& Value)
 	}
 }
 
-void AUS_PlayerCharacter::SprintEnd(const FInputActionValue& Value)
+void AUS_PlayerCharacter::SprintEnd_Server_Implementation()
 {
-	if(GetCharacterStats())
+	if (GetCharacterStats())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = GetCharacterStats()->WalkSpeed;
 	}
+}
+
+void AUS_PlayerCharacter::SprintStart(const FInputActionValue& Value)
+{
+	SprintStart_Server();
+}
+
+void AUS_PlayerCharacter::SprintEnd(const FInputActionValue& Value)
+{
+	SprintEnd_Server();
 }
 
 void AUS_PlayerCharacter::Interact(const FInputActionValue& Value)
@@ -133,6 +143,12 @@ void AUS_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AUS_PlayerCharacter::UpdateCharacterStats(int32 CharacterLevel)
 {
+	bool IsSprinting = false;
+	if(GetCharacterStats())
+	{
+		IsSprinting = GetCharacterMovement()->MaxWalkSpeed == GetCharacterStats()->SprintSpeed;
+	}
+	
 	if(CharacterDataTable)
 	{
 		TArray<FUS_CharacterStats*> CharacterStatsRows;
@@ -141,7 +157,14 @@ void AUS_PlayerCharacter::UpdateCharacterStats(int32 CharacterLevel)
 		{
 			const auto NewCharacterLevel = FMath::Clamp(CharacterLevel, 1, CharacterStatsRows.Num());
 			CharacterStats = CharacterStatsRows[NewCharacterLevel - 1];
-			GetCharacterMovement()->MaxWalkSpeed = GetCharacterStats()->WalkSpeed;
+			if(IsSprinting)
+			{
+				SprintStart_Server();
+			}
+			else
+			{
+				GetCharacterMovement()->MaxWalkSpeed = GetCharacterStats()->WalkSpeed;
+			}
 		}
 	}
 }

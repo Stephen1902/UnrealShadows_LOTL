@@ -48,6 +48,12 @@ protected:
 	void Move(const struct FInputActionValue& Value);
 	
 	void Look(const FInputActionValue& Value);
+
+	UFUNCTION(Server, Reliable)
+	void SprintStart_Server();
+	
+	UFUNCTION(Server, Reliable)
+	void SprintEnd_Server();
 	
 	void SprintStart(const FInputActionValue& Value);
 	void SprintEnd(const FInputActionValue& Value);
