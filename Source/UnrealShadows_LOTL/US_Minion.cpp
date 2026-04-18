@@ -48,10 +48,14 @@ AUS_Minion::AUS_Minion()
 		GetMesh()->SetSkeletalMesh(SkeletalMeshAsset.Object);
 	}
 
-	static ConstructorHelpers::FClassFinder<AUS_BasePickup> SpawnedPickupAsset(TEXT("/Game/Blueprints/BP_GoldCoinPickup"));
+	static ConstructorHelpers::FClassFinder<AUS_BasePickup> SpawnedPickupAsset(TEXT("/Game/Blueprints/WorldItems/BP_GoldCoinPickup"));
 	if (SpawnedPickupAsset.Succeeded())
 	{
 		SpawnedPickup = SpawnedPickupAsset.Class;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to get SpawnedPickup"));
 	}
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -160,6 +164,10 @@ void AUS_Minion::OnDamage(AActor* DamagedActor, float Damage, const UDamageType*
 	if(SpawnedPickup)
 	{
 		GetWorld()->SpawnActor<AUS_BasePickup>(SpawnedPickup, GetActorLocation(), GetActorRotation());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SpawnedPickup invalid"));
 	}
 	Destroy();
 }
