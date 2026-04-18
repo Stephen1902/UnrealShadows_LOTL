@@ -6,6 +6,8 @@
 #include "US_PlayerState.h"
 #include "US_PlayerCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "US_Minion.h"
+#include "Kismet/GameplayStatics.h"
 
 AUS_GameMode::AUS_GameMode()
 {
@@ -16,5 +18,22 @@ AUS_GameMode::AUS_GameMode()
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
+	}
+}
+
+void AUS_GameMode::AlertMinions(AActor* AlertInstigator, const FVector& Location, const float Radius)
+{
+	TArray<AActor*> Minions;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AUS_Minion::StaticClass(), Minions);
+	for (const auto Minion : Minions)
+	{
+		if(AlertInstigator == Minion) continue;
+		if (const auto Distance = FVector::Distance(AlertInstigator ->GetActorLocation(), Minion->GetActorLocation()); Distance < Radius)
+		{
+			if (const auto MinionCharacter = Cast<AUS_Minion>(Minion))
+			{
+				MinionCharacter->GoToLocation(Location);
+			}
+		}
 	}
 }

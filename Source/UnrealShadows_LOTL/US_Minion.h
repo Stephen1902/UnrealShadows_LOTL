@@ -17,6 +17,9 @@ class UNREALSHADOWS_LOTL_API AUS_Minion : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Minion Perception", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USphereComponent> Collision;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Minion AI", meta = (AllowPrivateAccess = "true"))
+	float AlertRadius = 6000.0f;
+
 	UPROPERTY()
 	FVector PatrolLocation;
 	
