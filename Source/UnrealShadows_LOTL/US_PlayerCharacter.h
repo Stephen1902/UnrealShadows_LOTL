@@ -35,6 +35,9 @@ class UNREALSHADOWS_LOTL_API AUS_PlayerCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stealth", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPawnNoiseEmitterComponent> NoiseEmitter;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UUS_WeaponProjectileComponent> Weapon;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Data", meta = (AllowPrivateAccess = "true"))
 	class UDataTable* CharacterDataTable;
 	
@@ -77,7 +80,8 @@ public:
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE FUS_CharacterStats* GetCharacterStats() const { return CharacterStats; }
-
+	FORCEINLINE UUS_WeaponProjectileComponent* GetWeapon() const { return Weapon; }
+	
 private:
 	UPROPERTY()
 	AActor* InteractableActor;

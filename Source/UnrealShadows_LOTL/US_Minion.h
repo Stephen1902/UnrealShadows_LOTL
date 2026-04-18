@@ -20,6 +20,12 @@ class UNREALSHADOWS_LOTL_API AUS_Minion : public ACharacter
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Minion AI", meta = (AllowPrivateAccess = "true"))
 	float AlertRadius = 6000.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Health", meta = (AllowPrivateAccess = "true"))
+	float Health = 5.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Pickup", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AUS_BasePickup> SpawnedPickup;
+
 	UPROPERTY()
 	FVector PatrolLocation;
 	
@@ -55,6 +61,9 @@ protected:
 
 	UFUNCTION()
 	void OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume);
+
+	UFUNCTION()
+	void OnDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
