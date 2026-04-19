@@ -60,6 +60,12 @@ protected:
 	
 	UFUNCTION(Server, Reliable)
 	void SprintEnd_Server();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void SprintStart_Client();
+	
+	UFUNCTION(NetMulticast, Reliable)
+	void SprintEnd_Client();
 	
 	void SprintStart(const FInputActionValue& Value);
 	void SprintEnd(const FInputActionValue& Value);

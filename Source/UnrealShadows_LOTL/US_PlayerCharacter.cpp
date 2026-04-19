@@ -104,13 +104,23 @@ void AUS_PlayerCharacter::Look(const FInputActionValue& Value)
 
 void AUS_PlayerCharacter::SprintStart_Server_Implementation()
 {
+	SprintStart_Client();
+}
+
+void AUS_PlayerCharacter::SprintEnd_Server_Implementation()
+{
+	SprintEnd_Client();
+}
+
+void AUS_PlayerCharacter::SprintStart_Client_Implementation()
+{
 	if (GetCharacterStats())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = GetCharacterStats()->SprintSpeed;
 	}
 }
 
-void AUS_PlayerCharacter::SprintEnd_Server_Implementation()
+void AUS_PlayerCharacter::SprintEnd_Client_Implementation()
 {
 	if (GetCharacterStats())
 	{
