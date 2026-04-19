@@ -6,7 +6,6 @@
 #include "Components/SceneComponent.h"
 #include "US_WeaponProjectileComponent.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALSHADOWS_LOTL_API UUS_WeaponProjectileComponent : public USceneComponent
 {
@@ -20,6 +19,9 @@ class UNREALSHADOWS_LOTL_API UUS_WeaponProjectileComponent : public USceneCompon
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	class UInputAction* ThrowAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Projectile", meta=(AllowPrivateAccess = "true"))
+	UAnimMontage* ThrowAnimation;
 public:	
 	// Sets default values for this component's properties
 	UUS_WeaponProjectileComponent();
@@ -34,6 +36,9 @@ protected:
 	
 	UFUNCTION(Server, Reliable)
 	void Throw_Server();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void Throw_Client();
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

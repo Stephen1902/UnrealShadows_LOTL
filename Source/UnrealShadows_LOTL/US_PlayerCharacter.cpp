@@ -42,6 +42,7 @@ AUS_PlayerCharacter::AUS_PlayerCharacter()
 	Weapon = CreateDefaultSubobject<UUS_WeaponProjectileComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(RootComponent);
 	Weapon->SetRelativeLocation(FVector(120.f, 70.f, 0.f));
+	Weapon->SetIsReplicated(true);
 
 	/** Character Setup */
 	bUseControllerRotationPitch = false;
