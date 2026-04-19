@@ -150,6 +150,10 @@ void AUS_PlayerCharacter::Interact_Server_Implementation()
 	{
 		IUS_Interactable::Execute_Interact(InteractableActor, this);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Interact called but no valid actor."))
+	}
 }
 
 // Called every frame
